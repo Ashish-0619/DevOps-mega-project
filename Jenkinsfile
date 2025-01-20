@@ -9,7 +9,6 @@ pipeline{
     environment{
         DOCKER_HUB_REPO = "rocish/mega-project"
         SONAR_PROJECT_KEY = "mega-project"
-        SONAR_HOST_URL = "http://localhost:9000"
         SONAR_TOKEN = credentials('sonarqube')
     }
     stages{
@@ -35,14 +34,15 @@ pipeline{
         stage("Static Code Analysis with SonarQube") {
             steps {
                 echo "Running SonarQube analysis..."
-                sh '''
-                    sonar-scanner \
-                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                        -Dsonar.sources=project/src \
-                        -Dsonar.host.url=${SONAR_HOST_URL} \
-                        -Dsonar.login=${SONAR_TOKEN}
-                    echo "SonarQube analysis completed."
-                '''
+                withSonarQubeEnv('SonarQubeServer') {
+                    sh '''
+                        sonar-scanner \
+                            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                            -Dsonar.sources=project/src \
+                            -Dsonar.login=${SONAR_TOKEN}
+                        echo "SonarQube analysis completed."
+                    '''
+                }
             }
         }
         stage("Security Scan with Trivy") {
