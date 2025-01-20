@@ -31,8 +31,8 @@ pipeline{
                 echo "Push to dockerHub is also done."
             }
         }
-    }
-    stage("Static Code Analysis with SonarQube") {
+
+        stage("Static Code Analysis with SonarQube") {
             steps {
                 echo "Running SonarQube analysis..."
                 sh '''
@@ -55,7 +55,8 @@ pipeline{
             }
         }
     }
-    post {
+
+        post {
         always {
             echo "Pipeline completed."
             archiveArtifacts artifacts: 'security-scan-report.txt', allowEmptyArchive: true
