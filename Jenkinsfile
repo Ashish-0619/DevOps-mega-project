@@ -9,7 +9,7 @@ pipeline{
     environment{
         DOCKER_HUB_REPO = "rocish/mega-project"
         SONAR_PROJECT_KEY = "mega-project"
-        SONAR_TOKEN = credentials('sonarqube')
+        SONAR_TOKEN = credentials('Jenkins-sonarqube')
     }
     stages{
         stage("Code"){
