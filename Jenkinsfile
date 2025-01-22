@@ -50,14 +50,17 @@ pipeline{
             steps {
                 echo "Running security scan with Trivy..."
                 script {
-                    // Use bash explicitly by setting the shell to bash
-                    sh '''#!/bin/bash
-                        echo "Using bash shell: $(which bash)"
-                        echo "DOCKER_HUB_REPO: ${DOCKER_HUB_REPO}"
-                        echo "IMAGE_VERSION: ${params.IMAGE_VERSION}"
-                        docker run --rm aquasec/trivy image ${DOCKER_HUB_REPO}:${params.IMAGE_VERSION} > security-scan-report.txt || true
-                        echo "Security scan completed."
-                    '''
+                    // Using environment variables for substitution
+                    withEnv(["DOCKER_HUB_REPO=${DOCKER_HUB_REPO}", "IMAGE_VERSION=${params.IMAGE_VERSION}"]) {
+                        sh '''#!/bin/bash
+                            echo "Using bash shell: $(which bash)"
+                            echo "DOCKER_HUB_REPO: ${DOCKER_HUB_REPO}"
+                            echo "IMAGE_VERSION: ${IMAGE_VERSION}"
+                            docker run --rm aquasec/trivy image ${DOCKER_HUB_REPO}:${IMAGE_VERSION} > security-scan-report.txt || true
+                            ls -l security-scan-report.txt  # Check if the report exists
+                            echo "Security scan completed."
+                        '''
+                    }
                 }
             }
         }
