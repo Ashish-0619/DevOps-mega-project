@@ -38,7 +38,8 @@ pipeline{
                     sh '''
                         sonar-scanner \
                             -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                            -Dsonar.sources=/var/lib/jenkins/workspace/DevOps-mega-project/src/
+                            -Dsonar.sources=/var/lib/jenkins/workspace/DevOps-mega-project/src/ \
+                            -Dsonar.java.binaries=. \
                             -Dsonar.login=${SONAR_TOKEN}
                         echo "SonarQube analysis completed."
                     '''
