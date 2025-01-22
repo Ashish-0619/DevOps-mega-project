@@ -49,11 +49,16 @@ pipeline{
         stage("Security Scan with Trivy") {
             steps {
                 echo "Running security scan with Trivy..."
-                sh '''
-                    #!/bin/bash
-                    docker run --rm aquasec/trivy image ${DOCKER_HUB_REPO}:${params.IMAGE_VERSION} > security-scan-report.txt || true
-                    echo "Security scan completed."
-                '''
+                script {
+                    // Use bash explicitly by setting the shell to bash
+                    sh '''#!/bin/bash
+                        echo "Using bash shell: $(which bash)"
+                        echo "DOCKER_HUB_REPO: ${DOCKER_HUB_REPO}"
+                        echo "IMAGE_VERSION: ${params.IMAGE_VERSION}"
+                        docker run --rm aquasec/trivy image ${DOCKER_HUB_REPO}:${params.IMAGE_VERSION} > security-scan-report.txt || true
+                        echo "Security scan completed."
+                    '''
+                }
             }
         }
     }
